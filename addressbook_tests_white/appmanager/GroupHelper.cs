@@ -44,7 +44,6 @@ namespace addressbook_tests_white
             TextBox textBox = (TextBox) dialog.Get(SearchCriteria.ByControlType(ControlType.Edit));
             textBox.Enter(newGroup.Name);
             Keyboard.Instance.PressSpecialKey(KeyboardInput.SpecialKeys.RETURN);
-            //aux.Send("{ENTER}");
             CloseGroupsDialog(dialog);
         }
 
@@ -57,6 +56,29 @@ namespace addressbook_tests_white
         {
             manager.MainWindow.Get<Button>("groupButton").Click();
             return manager.MainWindow.ModalWindow(GROUPWINTITLE);
+        }
+
+        public Window OpenDeletionGroupDialog(Window dialog)
+        {
+            dialog.Get<Button>("uxDeleteAddressButton").Click();
+            return dialog.ModalWindow("Delete group");
+        }
+
+        public void Remove()
+        {
+            //select group
+            List<GroupData> list = new List<GroupData>();
+            Window dialog = OpenGroupsDialog();
+            Tree tree = dialog.Get<Tree>("uxAddressTreeView");
+            TreeNode root = tree.Nodes[0];
+            TreeNode group = root.Nodes[1];
+            group.Select();
+            //click delete button
+            //dialog.Get<Button>("uxDeleteAddressButton").Click();
+            Window removeDialog = OpenDeletionGroupDialog(dialog);
+            //confirm deletion
+            removeDialog.Get<Button>("uxOKAddressButton").Click();
+            CloseGroupsDialog(dialog);
         }
     }
 }
