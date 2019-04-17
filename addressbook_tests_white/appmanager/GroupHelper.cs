@@ -64,6 +64,23 @@ namespace addressbook_tests_white
             return dialog.ModalWindow("Delete group");
         }
 
+        public void EnsureGroupExists()
+        {
+            if (IsGroupListEmpty())
+            {
+                GroupData newGroup = new GroupData()
+                {
+                    Name = "empty"
+                };
+                Add(newGroup);
+            }
+        }
+
+        public bool IsGroupListEmpty()
+        {
+            return GetGroupList().Count==1;
+        }
+
         public void Remove()
         {
             //select group
