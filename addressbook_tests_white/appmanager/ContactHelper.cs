@@ -1,0 +1,57 @@
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Automation;
+using TestStack.White;
+using TestStack.White.InputDevices;
+using TestStack.White.UIItems;
+using TestStack.White.UIItems.Finders;
+using TestStack.White.UIItems.TableItems;
+using TestStack.White.UIItems.WindowItems;
+using TestStack.White.WindowsAPI;
+
+namespace addressbook_tests_white
+{
+    public class ContactHelper: HelperBase
+    {
+        public static string CONTACTWINTITLE="";
+
+        public ContactHelper(ApplicationManager manager) : base(manager)
+        {
+
+        }
+
+        public void Add(ContactData newContact)
+        {
+            Window dialog = OpenContactsAddDialog();
+            
+            TextBox firstName = (TextBox)dialog.Get(SearchCriteria.ByAutomationId("ueFirstNameAddressTextBox"));
+            firstName.Enter(newContact.Name);
+            TextBox secondName = (TextBox)dialog.Get(SearchCriteria.ByAutomationId("ueMiddleNameAddressTextBox"));
+            secondName.Enter(newContact.SecondName);
+
+            dialog.Get<Button>("uxSaveAddressButton").Click();
+        }
+
+        public Window OpenContactsAddDialog()
+        {
+            manager.MainWindow.Get<Button>("uxNewAddressButton").Click();
+            return manager.MainWindow.ModalWindow("Contact Editor");
+        }
+
+        public List<ContactData> GetContactList()
+        {
+            List<ContactData> list = new List<ContactData>();
+            Table table = manager.MainWindow.Get<Table>("uxAddressGrid");
+            TableRows rows = table.Rows;
+            foreach ( TableRow tr in rows)
+            {
+                list.Add(new ContactData() { Name = tr.Cells[0].Value.ToString()});
+            }
+            return list;
+        }
+    }
+}
