@@ -24,6 +24,20 @@ namespace addressbook_tests_white
 
         }
 
+        public void Remove()
+        {
+            Window dialog = ConfirmDeletionDialog();
+            //dialog.Get<Button>("1508138").Click();
+            dialog.Get(SearchCriteria.ByText("Yes")).Click();
+            //dialog.Get<Button>("Yes");
+        }
+
+        private Window ConfirmDeletionDialog()
+        {
+            manager.MainWindow.Get<Button>("uxDeleteAddressButton").Click();
+            return manager.MainWindow.ModalWindow("Question");
+        }
+
         public void Add(ContactData newContact)
         {
             Window dialog = OpenContactsAddDialog();
@@ -52,6 +66,23 @@ namespace addressbook_tests_white
                 list.Add(new ContactData() { Name = tr.Cells[0].Value.ToString()});
             }
             return list;
+        }
+
+        public void EnsureContactExists()
+        {
+            if (IsContactListEmpty())
+            {
+                ContactData newContact = new ContactData()
+                {
+                    Name = "empty"
+                };
+                Add(newContact);
+            }
+        }
+
+        public bool IsContactListEmpty()
+        {
+            return GetContactList().Count == 0;
         }
     }
 }
